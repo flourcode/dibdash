@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIBDash - Defense Industrial Base Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    /* E-ink inspired color palette with green/grey tints */
+    --bg-primary: #f4f6f3;
+    --bg-secondary: #eef2ed;
+    --bg-tertiary: #e8ede6;
+    --surface: #f8faf7;
+    --border-light: #e2e7e0;
+    --border-medium: #d4dbd2;
+    --text-primary: #2a3028;
+    --text-secondary: #4a524a;
+    --text-tertiary: #6b736b;
+    --text-quaternary: #8b938b;
+    --accent-subtle: #3d4f3d;
+    --accent-muted: #5a6e5a;
+    --shadow-soft: rgba(45, 55, 45, 0.03);
+    --shadow-medium: rgba(45, 55, 45, 0.06);
+    --category-defense: #4a6b4a;
+    --category-industry: #5a5e6b;
+    --category-government: #6b5a3d;
+    --fresh-accent: #4a7c59;
+    --breaking-accent: #7c4a4a;
+    
+    /* E-ink specific additions */
+    --ink-green: #3d4f3d;
+    --ink-grey: #5a625a;
+    --paper-white: #f9fbf8;
+    --paper-cream: #f6f8f5;
+}
+body.dark-mode {
+    --bg-primary: #1e211e;
+    --bg-secondary: #252925;
+    --bg-tertiary: #2c302c;
+    --surface: #222622;
+    --border-light: #3a403a;
+    --border-medium: #4c524c;
+    --text-primary: #e0e5e0;
+    --text-secondary: #b0b5b0;
+    --text-tertiary: #808580;
+    --text-quaternary: #606560;
+    --accent-subtle: #6a806a;
+    --accent-muted: #8ab08a;
+    --shadow-soft: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.2);
+    --category-defense: #72a672;
+    --category-industry: #8a8fb0;
+    --category-government: #b08a6b;
+    --fresh-accent: #72a683;
+    --breaking-accent: #b07a7a;
+
+    /* E-ink specific additions for dark mode */
+    --ink-green: #6a806a;
+    --ink-grey: #8a8e8a;
+    --paper-white: #202420;
+    --paper-cream: #282c28;
+}
+/* Evening mode with warmer e-ink tones */
+body.evening-mode {
+    --bg-primary: #f2f4f1;
+    --bg-secondary: #ece8e5;
+    --surface: #f6f3f0;
+    --text-primary: #2d332d;
+    --ink-green: #3a4a3a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Atkinson Hyperlegible Next', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.4;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.005em;
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* Header with contextual messaging */
+header {
+    padding: 10px 0 6px 0;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 8px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+}
+
+.greeting {
+    font-size: 8px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.weekend-emoji {
+    font-size: 10px;
+}
+
+h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.current-date {
+    font-size: 8px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.last-updated {
+    font-size: 8px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 1px;
+}
+
+.contextual-message {
+    font-size: 9px;
+    color: var(--accent-muted);
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.header-right {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid var(--border-medium);
+    color: var(--text-tertiary);
+    padding: 4px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.action-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-btn.active {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.refresh-btn.loading svg {
+    animation: gentleSpin 2s linear infinite;
+}
+
+/* Category filters */
+.filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tab {
+    background: none;
+    border: 1px solid var(--border-medium);
+    color: var(--text-tertiary);
+    padding: 4px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-tab:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.filter-tab.active {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.filter-tab.defense.active {
+    background: var(--category-defense);
+    border-color: var(--category-defense);
+}
+
+.filter-tab.industry.active {
+    background: var(--category-industry);
+    border-color: var(--category-industry);
+}
+
+.filter-tab.government.active {
+    background: var(--category-government);
+    border-color: var(--category-government);
+}
+
+.fresh-count {
+    font-size: 8px;
+    background: var(--fresh-accent);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-left: 4px;
+}
+
+/* Date group headers */
+.date-group {
+    margin-bottom: 16px;
+}
+
+.date-group-header {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    padding-left: 2px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 4px;
+}
+
+/* Article grid */
+.article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 6px;
+    transition: gap 0.3s ease;
+}
+
+/* Default to a comfortable density */
+body .article-grid {
+    gap: 6px;
+}
+
+.article {
+    background: var(--surface);
+    padding: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    position: relative;
+}
+
+.article:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-1px);
+    border-color: var(--border-medium);
+}
+
+.article.fresh {
+}
+
+.article.focused {
+    opacity: 1 !important;
+}
+
+body.focus-mode .article:not(.focused) {
+    opacity: 0.4;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 6px;
+    font-size: 8px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+}
+
+.article-source {
+    color: var(--accent-muted);
+    font-weight: 500;
+}
+
+.article-source.defense { color: var(--category-defense); }
+.article-source.industry { color: var(--category-industry); }
+.article-source.government { color: var(--category-government); }
+
+.article-separator {
+    width: 2px;
+    height: 2px;
+    background: var(--text-quaternary);
+    border-radius: 50%;
+}
+
+.article-time {
+    color: var(--text-quaternary);
+}
+
+.article-hints {
+    display: flex;
+    gap: 3px;
+    margin-left: auto;
+    font-size: 10px;
+}
+
+.hint-emoji {
+    opacity: 0.6;
+}
+
+.reading-time {
+    font-size: 7px;
+    color: var(--text-quaternary);
+    margin-left: auto;
+}
+
+.article-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+}
+
+.article-description {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-weight: 300;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.article-actions {
+    display: flex;
+    justify-content: flex-start; /* Changed to flex-start */
+    align-items: center;
+    gap: 8px; /* Added a gap between the buttons */
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-light);
+}
+
+/* Updated styles for the buttons */
+.article-action-button {
+    background: var(--surface);
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.article-action-button:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-muted);
+}
+
+
+/* Keyboard shortcuts help */
+.keyboard-help {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    font-size: 10px;
+    display: none;
+    z-index: 1000;
+}
+
+.keyboard-help.visible {
+    display: block;
+}
+
+.keyboard-help h3 {
+    font-size: 11px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.keyboard-help .shortcut {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    color: var(--text-secondary);
+}
+
+.keyboard-help kbd {
+    background: var(--bg-tertiary);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 9px;
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    border-top: 1px solid var(--border-light);
+    padding: 20px 0;
+    background: var(--bg-secondary);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-about p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.share-link {
+    font-size: 10px;
+    color: var(--accent-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    padding: 6px 12px;
+    border: 1px solid var(--border-medium);
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    background: var(--surface);
+}
+
+.share-link:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-muted);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.footer-copyright p {
+    font-size: 9px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+}
+
+/* Desktop 4-column grid */
+@media (min-width: 1200px) {
+    .article-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+    .article-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+    .article-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 599px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    header {
+        padding: 8px 0 6px 0;
+        margin-bottom: 6px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+    
+    .header-left {
+        gap: 0px;
+    }
+    
+    .greeting, .current-date, .last-updated {
+        font-size: 7px;
+    }
+    
+    h1 {
+        font-size: 14px;
+    }
+    
+    .filters {
+        gap: 4px;
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+    
+    .filter-tab {
+        padding: 4px 10px;
+        font-size: 9px;
+    }
+    
+    .article-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .article {
+        padding: 12px;
+    }
+    
+    .article-title {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+    
+    .article-description {
+        font-size: 10px;
+        line-height: 1.3;
+        -webkit-line-clamp: 3;
+    }
+	.article-meta {
+       margin-bottom: 4px;
+   }
+   
+   footer {
+       margin-top: 30px;
+       padding: 16px 0;
+   }
+   
+   .footer-content {
+       gap: 10px;
+   }
+   
+   .footer-about p {
+       font-size: 10px;
+       line-height: 1.3;
+   }
+   
+   .share-link {
+       font-size: 9px;
+       padding: 5px 10px;
+   }
+   
+   .footer-copyright p {
+       font-size: 8px;
+   }
+}
+
+/* States */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-tertiary);
+}
+
+.empty-state .icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    opacity: 0.3;
+}
+
+.empty-state h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 300;
+    line-height: 1.3;
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 15px;
+    color: var(--text-tertiary);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+}
+
+.loading-message {
+    animation: fadeInOut 2s ease infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.error-message {
+    background: #fef9f9;
+    border: 1px solid #f5e6e6;
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    display: none;
+    text-align: center;
+    font-weight: 300;
+}
+
+/* Progress indicator */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--border-light);
+    z-index: 100;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-subtle), var(--accent-muted));
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(3px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.article {
+    animation: fadeIn 0.2s ease forwards;
+}
+
+.article:nth-child(1) { animation-delay: 0.02s; }
+.article:nth-child(2) { animation-delay: 0.04s; }
+.article:nth-child(3) { animation-delay: 0.06s; }
+.article:nth-child(4) { animation-delay: 0.08s; }
+
+@keyframes gentleSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Focus states */
+.refresh-btn:focus,
+.filter-tab:focus,
+.article:focus,
+.share-link:focus {
+    outline: 2px solid var(--accent-muted);
+    outline-offset: 2px;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--border-medium);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toast.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Pull to refresh indicator (mobile) */
+.pull-to-refresh {
+    position: fixed;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--surface);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    transition: top 0.3s ease;
+    z-index: 99;
+}
+
+.pull-to-refresh.refreshing {
+    animation: gentleSpin 1s linear infinite;
+}
+/* Contract Awards Section */
+.contracts-section {
+    margin-bottom: 20px;
+    padding: 12px 0;
+    border-bottom: 2px solid var(--border-light);
+}
+
+.contracts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.contracts-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.contracts-badge {
+    background: var(--accent-subtle);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.contracts-summary {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.agency-card {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.agency-card:hover {
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    transform: translateY(-1px);
+    border-color: var(--border-medium);
+}
+
+.agency-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.agency-name {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-subtle);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.agency-icon {
+    font-size: 14px;
+}
+
+.agency-total {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.agency-stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-light);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-quaternary);
+}
+
+.stat-value {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.top-contracts {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-light);
+}
+
+.contract-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin: 4px 0;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.contract-company {
+    flex: 1;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-right: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.contract-value {
+    font-weight: 600;
+    color: var(--accent-subtle);
+    white-space: nowrap;
+}
+
+.contract-type-badge {
+    display: inline-block;
+    font-size: 7px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    margin-left: 4px;
+    text-transform: uppercase;
+}
+
+/* Contract details modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--surface);
+    border-radius: 12px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    margin: 20px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-tertiary);
+}
+
+.contracts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contract-detail {
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.contract-detail-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.contract-detail-company {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.contract-detail-value {
+    font-weight: 600;
+    color: var(--accent-subtle);
+}
+
+.contract-detail-info {
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Mobile adjustments */
+@media (max-width: 599px) {
+    .contracts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .agency-stats {
+        gap: 8px;
+    }
+    
+    .contracts-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+/* Stock Ticker specific styling */
+.stock-ticker-section {
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+    padding: 8px 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.stock-ticker-header {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+}
+
+.ticker-scroll-wrapper {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ticker-scroll-content {
+    display: inline-block;
+    animation: tickerScroll 120s linear infinite;
+    will-change: transform;
+}
+
+.stock-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+}
+
+.stock-ticker {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stock-price {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.stock-percent-change {
+    font-size: 9px; /* Slightly smaller than price */
+    font-weight: 500;
+    margin-left: -4px; /* Adjust spacing as needed */
+}
+
+.stock-change-positive {
+    color: #28a745; /* Green color for positive change */
+}
+
+.stock-change-negative {
+    color: #dc3545; /* Red color for negative change */
+}
+
+@keyframes tickerScroll {
+    from { transform: translateX(0%); }
+    to { transform: translateX(-50%); }
+}
+
+/* Ad Placement CSS */
+.ad-placeholder {
+    background: var(--surface);
+    border: 1px dashed var(--border-medium);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    height: 120px; /* Adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.ad-placeholder:hover {
+    background: var(--bg-tertiary);
+}
+.ad-content {
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.ad-label {
+    font-size: 9px;
+    color: var(--text-quaternary);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+   </style>
+</head>
+<body>
+   <div class="reading-progress">
+       <div class="progress-bar" id="progressBar"></div>
+   </div>
+   
+   <div class="container">
+       <header>
+           <div class="header-content">
+               <div class="header-left">
+                   <h2>dibdash.</h2>
+					<h1>Defense Industrial Base Dashboard</h1>
+                   <div class="current-date" id="currentDate"></div>
+                   <div class="greeting" id="greeting"></div>
+                   <div class="last-updated" id="lastUpdated">Loading...</div>
+                   <div class="contextual-message" id="contextualMessage"></div>
+               </div>
+   
+<div class="header-right">
+    <button class="action-btn" id="darkModeToggle">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        Dark Mode
+    </button>
+    <button class="action-btn refresh-btn" id="refreshBtn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/>
+        </svg>
+        Refresh
+    </button>
+</div>
+           </div>
+       </header>
+       
+       <div class="filters" id="filterContainer">
+           <button class="filter-tab active" data-filter="all">All</button>
+       </div>
+       
+       <div class="error-message" id="errorMessage"></div>
+       <div id="content">
+           <div class="article-grid">
+               <div class="loading">
+                   <div class="loading-message" id="loadingMessage">Gathering intelligence...</div>
+               </div>
+           </div>
+       </div>
+       
+       <footer>
+           <div class="footer-content">
+               <div class="footer-about">
+                   <p>Curated intelligence for Defense professionals.</p>
+               </div>
+               <div class="footer-links">
+                   <a href="#" class="share-link" id="shareLink">Share With a Friend.</a>
+               </div>
+               <div class="footer-copyright">
+                   <p>&copy; 2025 DIBDash.com. All rights reserved.</p>
+               </div>
+           </div>
+       </footer>
+   </div>
+   
+   <div class="keyboard-help" id="keyboardHelp">
+       <h3>Keyboard Shortcuts</h3>
+       <div class="shortcut"><span>Articles</span><kbd>1-9</kbd></div>
+       <div class="shortcut"><span>Filter</span><kbd>F</kbd></div>
+       <div class="shortcut"><span>Refresh</span><kbd>R</kbd></div>
+       <div class="shortcut"><span>Density</span><kbd>D</kbd></div>
+       <div class="shortcut"><span>Help</span><kbd>?</kbd></div>
+       <div class="shortcut"><span>Close</span><kbd>ESC</kbd></div>
+   </div>
+   
+   <div class="toast" id="toast"></div>
+   <div class="modal-overlay" id="contractModal" onclick="if(event.target === this) closeModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalAgencyName">Agency Contracts</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="contracts-list" id="modalContractsList">
+            </div>
+    </div>
+</div>
+   <script>
+       // Configuration
+       const S3_JSON_URL = 'https://askarti-daily-data.s3.us-east-1.amazonaws.com/daily-news.json';
+       
+       // State
+       let articles = [];
+       let currentFilter = 'all';
+       let isLoading = false;
+       let focusMode = false;
+       let scrollPosition = 0;
+       
+       // Loading messages
+       const loadingMessages = [
+           "Gathering intelligence...",
+           "Scanning defense channels...",
+           "Checking industry updates...",
+           "Analyzing government feeds...",
+           "Almost there...",
+           "Compiling your briefing..."
+       ];
+       let loadingMessageIndex = 0;
+       
+       // Empty state messages by category
+       const emptyStateMessages = {
+           defense: ["Intel is quiet today", "All quiet on the defense front", "Defense channels are silent"],
+           industry: ["Markets taking a breather", "Industry in stealth mode", "No industry updates"],
+           government: ["Capitol Hill is unusually quiet", "Government on pause", "No government activity"],
+           all: ["No updates at the moment", "Channels are quiet", "Nothing new to report"]
+       };
+       
+       // UI Elements
+       const content = document.getElementById('content');
+       const refreshBtn = document.getElementById('refreshBtn');
+       const errorMessage = document.getElementById('errorMessage');
+       const filterContainer = document.getElementById('filterContainer');
+       const lastUpdated = document.getElementById('lastUpdated');
+       const greeting = document.getElementById('greeting');
+       const currentDateElement = document.getElementById('currentDate');
+       const progressBar = document.getElementById('progressBar');
+       const shareLink = document.getElementById('shareLink');
+       const contextualMessage = document.getElementById('contextualMessage');
+       const loadingMessage = document.getElementById('loadingMessage');
+       const keyboardHelp = document.getElementById('keyboardHelp');
+       const toast = document.getElementById('toast');
+       const pullToRefresh = document.getElementById('pullToRefresh');
+       
+       // URL parameters for preferences
+       function getUrlParams() {
+           const params = new URLSearchParams(window.location.search);
+           return {
+               category: params.get('category') || 'all'
+           };
+       }
+       
+       function updateUrlParams(key, value) {
+           const url = new URL(window.location);
+           url.searchParams.set(key, value);
+           window.history.replaceState({}, '', url);
+       }
+       
+       // Initialize from URL params
+       function initializeFromParams() {
+           const params = getUrlParams();
+           currentFilter = params.category;
+       }
+       
+       // Show toast notification
+       function showToast(message, duration = 2000) {
+           toast.textContent = message;
+           toast.classList.add('visible');
+           setTimeout(() => {
+               toast.classList.remove('visible');
+           }, duration);
+       }
+       
+       // Set greeting based on time and context
+       function setGreetingAndDate() {
+           const now = new Date();
+           const hour = now.getHours();
+           const day = now.getDay();
+           
+           // Time-based greeting
+           let greetingText = 'Good Morning';
+           if (hour >= 12 && hour < 17) {
+               greetingText = 'Good Afternoon';
+           } else if (hour >= 17) {
+               greetingText = 'Good Evening';
+           }
+           
+           // Weekend emoji
+           const weekendEmoji = (day === 0 || day === 6) ? '<span class="weekend-emoji">☕</span>' : '';
+           
+           // Evening mode
+           if (hour >= 20 || hour < 6) {
+               document.body.classList.add('evening-mode');
+           } else {
+               document.body.classList.remove('evening-mode');
+           }
+           
+           const options = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
+           const formattedDate = now.toLocaleDateString('en-US', options);
+           
+           currentDateElement.textContent = formattedDate;
+           greeting.innerHTML = `${greetingText}. Your dashboard is ready. ${weekendEmoji}`;
+           
+           // Contextual message
+           contextualMessage.textContent = getContextualMessage(now);
+       }
+       
+       // Get contextual message based on time/day
+       function getContextualMessage(now) {
+           const day = now.getDay();
+           const hour = now.getHours();
+           
+           if (day === 1 && hour < 10) return "Monday briefing ready";
+           if (day === 5 && hour > 15) return "Weekend preview";
+           if (hour > 20) return "Evening digest";
+           if (hour < 7) return "Early bird briefing";
+           if (day === 0 || day === 6) return "Weekend reading";
+           return "";
+       }
+       
+       // Reading progress
+       function updateReadingProgress() {
+           const scrollTop = window.pageYOffset;
+           const docHeight = document.body.scrollHeight - window.innerHeight;
+           const scrollPercent = (scrollTop / docHeight) * 100;
+           progressBar.style.width = Math.min(scrollPercent, 100) + '%';
+       }
+       
+       // Save scroll position
+       function saveScrollPosition() {
+           scrollPosition = window.pageYOffset;
+       }
+       
+       function restoreScrollPosition() {
+           if (scrollPosition > 0) {
+               setTimeout(() => {
+                   window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+               }, 100);
+           }
+       }
+       // Dark Mode Toggle
+       const darkModeToggle = document.getElementById('darkModeToggle');
+       const body = document.body;
+       
+       function enableDarkMode() {
+           body.classList.add('dark-mode');
+           darkModeToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Light Mode`;
+           localStorage.setItem('theme', 'dark');
+       }
+       
+       function disableDarkMode() {
+           body.classList.remove('dark-mode');
+           darkModeToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode`;
+           localStorage.setItem('theme', 'light');
+       }
+       
+       // Check for saved theme preference
+       const savedTheme = localStorage.getItem('theme');
+       if (savedTheme === 'dark') {
+           enableDarkMode();
+       } else {
+           disableDarkMode(); // Ensure light mode is set if no preference or 'light'
+       }
+       
+       darkModeToggle.addEventListener('click', () => {
+           if (body.classList.contains('dark-mode')) {
+               disableDarkMode();
+           } else {
+               enableDarkMode();
+           }
+       });
+       // Utility functions
+       function timeAgo(dateString) {
+           const now = new Date();
+           const date = new Date(dateString);
+           const seconds = Math.floor((now - date) / 1000);
+           if (seconds < 60) return 'now';
+           const minutes = Math.floor(seconds / 60);
+           if (minutes < 60) return `${minutes}m`;
+           const hours = Math.floor(minutes / 60);
+           if (hours < 24) return `${hours}h`;
+           const days = Math.floor(hours / 24);
+           if (days < 7) return `${days}d`;
+           return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+       }
+       
+       // Get freshness class
+       function getFreshnessClass(dateString) {
+           const hours = (new Date() - new Date(dateString)) / 3600000;
+           if (hours < 2) return 'fresh';
+           if (hours < 6) return 'recent';
+           return '';
+       }
+       
+       // Get article hints
+       function getArticleHints(article) {
+           const hints = [];
+           
+           // Breaking news
+           const hours = (new Date() - new Date(article.pubDate)) / 3600000;
+           if (hours < 1) hints.push('⚡');
+           
+           // Data/analysis
+           if (article.characteristics?.includes('data')) hints.push('📊');
+           
+           // Long read
+           if (article.characteristics?.includes('longread')) hints.push('📖');
+           
+           // Tech focus
+           if (article.characteristics?.includes('tech')) hints.push('🔬');
+           
+           return hints;
+       }
+       
+       // Smart truncation (handled by Lambda now, but kept for fallback)
+       function smartTruncate(text, maxLength = 200) {
+           if (!text || text.length <= maxLength) return text;
+           
+           const truncated = text.substring(0, maxLength);
+           const lastPeriod = truncated.lastIndexOf('. ');
+           const lastQuestion = truncated.lastIndexOf('? ');
+           const lastExclamation = truncated.lastIndexOf('! ');
+           
+           const lastBoundary = Math.max(lastPeriod, lastQuestion, lastExclamation);
+           
+           if (lastBoundary > maxLength * 0.6) {
+               return text.substring(0, lastBoundary + 2);
+           }
+           
+           const lastSpace = truncated.lastIndexOf(' ');
+           return text.substring(0, lastSpace) + '...';
+       }
+       
+       // Group articles by date
+       function groupArticlesByDate(articles) {
+           const now = new Date();
+           const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+           const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+           const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+           
+           const groups = {
+               today: { label: 'Today', articles: [] },
+               yesterday: { label: 'Yesterday', articles: [] },
+               thisWeek: { label: 'This Week', articles: [] },
+               older: { label: 'Earlier', articles: [] }
+           };
+           
+           articles.forEach(article => {
+               const articleDate = new Date(article.pubDate);
+               const articleDay = new Date(articleDate.getFullYear(), articleDate.getMonth(), articleDate.getDate());
+               
+               if (articleDay.getTime() === today.getTime()) {
+                   groups.today.articles.push(article);
+               } else if (articleDay.getTime() === yesterday.getTime()) {
+                   groups.yesterday.articles.push(article);
+               } else if (articleDay.getTime() >= thisWeek.getTime()) {
+                   groups.thisWeek.articles.push(article);
+               } else {
+                   groups.older.articles.push(article);
+               }
+           });
+           
+           return groups;
+       }
+       
+       // Get category class for styling
+       function getCategoryClass(category) {
+           return category ? category.toLowerCase() : '';
+       }
+       
+       // Fetch articles
+       async function fetchArticles() {
+           try {
+               const response = await fetch(S3_JSON_URL + '?t=' + Date.now());
+               if (!response.ok) throw new Error(`HTTP ${response.status}`);
+               const data = await response.json();
+               
+               if (data.summary?.timestamp) {
+                   lastUpdated.textContent = `Updated ${timeAgo(data.summary.timestamp)}`;
+               }
+               
+               return data.items || [];
+           } catch (error) {
+               console.error('Error fetching articles:', error);
+               throw error;
+           }
+       }
+       
+       // Create category filters
+       function createFilters() {
+           const categories = [...new Set(articles.map(a => a.category))].filter(Boolean).sort();
+           
+           // Count fresh articles per category
+           const freshCounts = {};
+           articles.forEach(article => {
+               if (getFreshnessClass(article.pubDate) === 'fresh') {
+                   freshCounts[article.category] = (freshCounts[article.category] || 0) + 1;
+                   freshCounts['all'] = (freshCounts['all'] || 0) + 1;
+               }
+           });
+           
+           filterContainer.innerHTML = `
+               <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">
+                   All ${freshCounts['all'] ? `<span class="fresh-count">${freshCounts['all']}</span>` : ''}
+               </button>
+               ${categories.map(category => `
+                   <button class="filter-tab ${getCategoryClass(category)} ${currentFilter === category ? 'active' : ''}" data-filter="${category}">
+                       ${category.charAt(0).toUpperCase() + category.slice(1)}
+                       ${freshCounts[category] ? `<span class="fresh-count">${freshCounts[category]}</span>` : ''}
+                   </button>
+               `).join('')}
+           `;
+           
+           // Add event listeners
+           document.querySelectorAll('.filter-tab').forEach(tab => {
+               tab.addEventListener('click', function() {
+                   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                   this.classList.add('active');
+                   currentFilter = this.dataset.filter;
+                   updateUrlParams('category', currentFilter);
+                   saveScrollPosition();
+                   renderArticles();
+                   restoreScrollPosition();
+               });
+           });
+       }
+       
+// Add these functions to your existing JavaScript
+function formatCurrency(value) {
+    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
+    return `$${value}`;
+}
+
+function renderContractsSection(contractsData) {
+    if (!contractsData || !contractsData.agencies) {
+        console.log('No contracts data available');
+        return '';
+    }
+    
+    const date = new Date(contractsData.date || new Date()).toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    // Safely access insights with defaults
+    const insights = contractsData.insights || {
+        totalContracts: 0,
+        totalValue: 0,
+    };
+    
+    const agencyCards = Object.entries(contractsData.agencies)
+        .filter(([agency, data]) => data && data.contracts && data.contracts.length > 0)
+        .map(([agency, data]) => {
+            // Get top 3 contracts by value
+            const topContracts = data.contracts
+                .sort((a, b) => b.value - a.value)
+                .slice(0, 3);
+            
+            // Count by type
+            const typeCount = data.contracts.reduce((acc, contract) => {
+                acc[contract.type] = (acc[contract.type] || 0) + 1;
+                return acc;
+            }, {});
+            
+            const topType = Object.entries(typeCount)
+                .sort((a, b) => b[1] - a[1])[0];
+            
+            return `
+                <div class="agency-card" onclick="showAgencyDetails('${agency}')" tabindex="0">
+                    <div class="agency-header">
+                        <div class="agency-name">
+                            <span class="agency-icon">${data.icon || '📄'}</span>
+                            ${agency}
+                        </div>
+                        <div class="agency-total">${formatCurrency(data.total || 0)}</div>
+                    </div>
+                    
+                    <div class="agency-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Contracts</span>
+                            <span class="stat-value">${data.contracts.length}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Avg Value</span>
+                            <span class="stat-value">${formatCurrency(Math.round((data.total || 0) / data.contracts.length))}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Top Type</span>
+                            <span class="stat-value">${topType ? topType[0] : 'General'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="top-contracts">
+                        ${topContracts.map(contract => `
+                            <div class="contract-item">
+                                <span class="contract-company">${contract.company || 'Unknown'}</span>
+                                <span class="contract-value">${contract.formattedValue || formatCurrency(contract.value || 0)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    
+    // Only render if we have agency cards
+    if (!agencyCards) {
+        return '';
+    }
+    
+    return `
+        <div class="contracts-section">
+            <div class="contracts-header">
+                <div class="contracts-title">
+                    Contract Awards This Week
+                </div>
+                <div class="contracts-summary">
+                    ${insights.totalContracts || 0} contracts • ${formatCurrency(insights.totalValue || 0)} total
+                </div>
+            </div>
+            <div class="contracts-grid">
+                ${agencyCards}
+            </div>
+        </div>
+    `;
+}
+
+// Store contracts data globally for modal access
+let currentContractsData = null;
+
+function showAgencyDetails(agencyName) {
+   if (!currentContractsData || !currentContractsData.agencies[agencyName]) return;
+   
+   const agency = currentContractsData.agencies[agencyName];
+   const modal = document.getElementById('contractModal');
+   const modalContent = document.getElementById('modalContractsList');
+   
+   document.getElementById('modalAgencyName').textContent = agencyName;
+   
+   const contractsHtml = agency.contracts
+       .sort((a, b) => b.value - a.value)
+       .map(contract => `
+           <div class="contract-detail">
+               <div class="contract-detail-header">
+                   <span class="contract-detail-company">${contract.company}</span>
+                   <span class="contract-detail-value">${contract.formattedValue}</span>
+               </div>
+               <div class="contract-detail-info">
+                   <div><strong>Location:</strong> ${contract.location}</div>
+                   <div><strong>Type:</strong> ${contract.type} ${contract.isModification ? '(Modification)' : ''}</div>
+                   <div><strong>Description:</strong> ${contract.description}</div>
+                   ${contract.workLocation ? `<div><strong>Work Location:</strong> ${contract.workLocation}</div>` : ''}
+                   ${contract.completionDate ? `<div><strong>Completion:</strong> ${contract.completionDate}</div>` : ''}
+               </div>
+           </div>
+       `).join('');
+   
+   modalContent.innerHTML = contractsHtml;
+   modal.classList.add('active');
+}
+
+function closeModal() {
+   document.getElementById('contractModal').classList.remove('active');
+}
+
+// === NEW CODE FOR STOCK TICKER ===
+
+let stockData = []; // This will now hold the fetched data
+
+// Google Sheets URL to get the data as CSV
+const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1svXheHx4C1XVLITnVsW7nbT0v-B8tJxDviZG-Op2v58/gviz/tq?tqx=out:csv&sheet=Sheet1';
+
+/**
+ * Fetches and parses stock data from the Google Sheet.
+ * @returns {Promise<Array>} A promise that resolves with an array of stock objects.
+ */
+async function fetchStockData() {
+    try {
+        const response = await fetch(GOOGLE_SHEETS_URL + '&t=' + Date.now()); // Add timestamp to prevent caching
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Google Sheet data: ${response.statusText}`);
+        }
+        const csv = await response.text();
+        const lines = csv.split('\n');
+        
+        // Find the correct indices for the headers
+        let tickerIndex = -1;
+        let priceIndex = -1;
+        let percentChangeIndex = -1;
+        
+        // Split the first line (headers) by comma
+        const headers = lines[0].split(',');
+        for (let i = 0; i < headers.length; i++) {
+            const header = headers[i].trim().replace(/^"|"$/g, '');
+            if (header === 'Ticker') {
+                tickerIndex = i;
+            }
+            if (header === 'Price') {
+                priceIndex = i;
+            }
+            if (header === 'Change%') {
+                percentChangeIndex = i;
+            }
+        }
+        
+        if (tickerIndex === -1 || priceIndex === -1 || percentChangeIndex === -1) {
+            console.error('Error: Could not find "Ticker", "Price", or "Change%" headers in the Google Sheet.');
+            return [];
+        }
+
+        const data = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(value => value.trim().replace(/^"|"$/g, ''));
+            if (values.length > tickerIndex && values.length > priceIndex && values.length > percentChangeIndex) {
+                // Parse the percent change directly from the sheet
+                const percentChangeValue = values[percentChangeIndex].replace(/[^0-9.-]/g, '');
+                
+                data.push({
+                    ticker: values[tickerIndex],
+                    price: parseFloat(values[priceIndex].replace(/[^0-9.]/g, '')),
+                    percentChange: parseFloat(percentChangeValue) // Use the parsed value directly
+                });
+            }
+        }
+        return data;
+    } catch (error) {
+        console.error('Error fetching stock data:', error);
+        return [];
+    }
+}
+
+/**
+ * Generates the full HTML string for the stock ticker with all data.
+ * @returns {string} The HTML for the stock ticker section.
+ */
+function getStockTickerHtml() {
+    if (stockData.length === 0) {
+        return '';
+    }
+    
+    const stockItemsHtml = stockData.map(stock => {
+        // Determine color based on percent change
+        const changeClass = stock.percentChange >= 0 ? 'stock-change-positive' : 'stock-change-negative';
+        const changeSign = stock.percentChange >= 0 ? '+' : ''; // Add a '+' sign for positive changes
+
+        return `
+            <div class="stock-item">
+                <span class="stock-ticker">${stock.ticker}</span>
+                <span class="stock-price">$${stock.price.toFixed(2)}</span>
+                <span class="stock-percent-change ${changeClass}">${changeSign}${stock.percentChange.toFixed(2)}%</span>
+            </div>
+        `;
+    }).join('');
+
+    // Duplicate the content to ensure a seamless loop
+    const tickerContent = stockItemsHtml + stockItemsHtml;
+
+    return `
+        <div class="stock-ticker-section">
+            <div class="stock-ticker-header">
+                DIB Stocks (20-minute delay)
+            </div>
+            <div class="ticker-scroll-wrapper">
+                <div class="ticker-scroll-content">
+                    ${tickerContent}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderAdPlaceholder() {
+    // This function will generate the HTML for a placeholder ad
+    // You can replace this content with your actual ad code
+    return `
+        
+    `;
+}
+
+// Update the renderArticles function to include ad placements
+async function renderArticles() {
+   // Fetch stock data first
+   stockData = await fetchStockData();
+
+   const filtered = currentFilter === 'all' 
+       ? articles 
+       : articles.filter(a => a.category === currentFilter);
+   
+   // Build the HTML starting with contracts if available
+   let html = '';
+   
+   // Add contracts section at the top if we have contracts data
+   if (currentContractsData && currentFilter === 'all') {
+       html += renderContractsSection(currentContractsData);
+   }
+
+   // Add the stock ticker
+   if (currentFilter === 'all') {
+       html += getStockTickerHtml();
+   }
+   
+   if (filtered.length === 0) {
+       const messages = emptyStateMessages[currentFilter] || emptyStateMessages['all'];
+       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+       
+       html += `
+           <div class="article-grid">
+               <div class="empty-state">
+                   <div class="icon">📋</div>
+                   <h3>${randomMessage}</h3>
+                   <p>Try another filter or check back later.</p>
+               </div>
+           </div>
+       `;
+   } else {
+    const groups = groupArticlesByDate(filtered);
+    const dateGroups = Object.entries(groups);
+
+    // Render each group and insert an ad after each one
+    dateGroups.forEach(([key, group]) => {
+        if (group.articles.length > 0) {
+            html += `
+                <div class="date-group">
+                    <div class="date-group-header">${group.label}</div>
+                    <div class="article-grid">
+                        ${group.articles.map((article, index) => {
+                            const freshnessClass = getFreshnessClass(article.pubDate);
+                            const hints = getArticleHints(article);
+                            const readingTime = article.readingTime || 2;
+                            
+                            // LinkedIn share URL
+                            const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(article.link)}`;
+                            
+                            return `
+                                <article class="article ${freshnessClass}" 
+                                         data-index="${index}"
+                                         tabindex="0" 
+                                         role="article" 
+                                         aria-label="Article: ${article.title}">
+                                    <div class="article-meta">
+                                        <span class="article-source ${getCategoryClass(article.category)}">${article.source}</span>
+                                        <div class="article-separator"></div>
+                                        <span class="article-time">${timeAgo(article.pubDate)}</span>
+                                        ${hints.length > 0 ? `
+                                            <div class="article-hints">
+                                                ${hints.map(h => `<span class="hint-emoji"></span>`).join('')}
+                                            </div>
+                                        ` : ''}
+                                        <span class="reading-time">${readingTime} min</span>
+                                    </div>
+                                    <h2 class="article-title">${article.title}</h2>
+                                    <p class="article-description">${article.description || 'Read more for details.'}</p>
+                                    <div class="article-actions">
+                                        <a href="${article.link}" target="_blank" class="article-action-button">Read More</a>
+                                        <a href="${linkedInUrl}" target="_blank" class="article-action-button">
+                                            Share on LinkedIn
+                                        </a>
+                                    </div>
+                                </article>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Insert a placeholder ad after each date group
+            html += renderAdPlaceholder();
+        }
+    });
+   }
+
+   content.innerHTML = html;
+   
+   // Add keyboard navigation and focus mode
+   document.querySelectorAll('.article').forEach(article => {
+       article.addEventListener('keydown', function(e) {
+           // Number keys 1-9 are now for a separate function, not tied to opening articles
+           if (e.key === 'Enter' || e.key === ' ') {
+               e.preventDefault();
+               // Do nothing or implement a new action, as articles are no longer clickable
+           }
+       });
+       
+       article.addEventListener('dblclick', function(e) {
+           e.preventDefault();
+           toggleFocusMode(this);
+       });
+   });
+   
+   // Add keyboard navigation for agency cards
+   document.querySelectorAll('.agency-card').forEach(card => {
+       card.addEventListener('keydown', function(e) {
+           if (e.key === 'Enter' || e.key === ' ') {
+               e.preventDefault();
+               this.click();
+           }
+       });
+   });
+}
+
+// Update the fetchArticles function to also get contracts
+async function fetchArticles() {
+   try {
+       const response = await fetch(S3_JSON_URL + '?t=' + Date.now());
+       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+       const data = await response.json();
+       
+       if (data.summary?.timestamp) {
+           lastUpdated.textContent = `Updated ${timeAgo(data.summary.timestamp)}`;
+       }
+       
+       // Store contracts data if available
+       currentContractsData = data.contracts || null;
+       
+       return data.items || [];
+   } catch (error) {
+       console.error('Error fetching articles:', error);
+       throw error;
+   }
+}
+// RSS Fetch endpoint (your Lambda Function URL)
+const RSS_FETCH_URL = 'https://jcsmad2nf7gbhxyarmpykpmdwm0bafge.lambda-url.us-east-1.on.aws/';
+
+// Function to trigger full RSS fetch
+async function triggerRSSFetch() {
+    const statusElement = document.getElementById('rssFetchStatus');
+    const button = document.getElementById('rssFetchBtn');
+    
+    if (!statusElement || !button) return;
+    
+    // Disable button and show loading state
+    button.disabled = true;
+    button.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spinning">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        Fetching RSS...
+    `;
+    statusElement.textContent = 'Triggering RSS fetch...';
+    statusElement.style.color = 'var(--text-secondary)';
+    
+    try {
+        const response = await fetch(RSS_FETCH_URL, {
+            method: 'GET', // or POST depending on your Lambda setup
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('RSS Fetch result:', result);
+        
+        if (result.success) {
+            statusElement.textContent = `✓ Fetched ${result.count || 0} articles from ${result.sources?.length || 0} sources`;
+            statusElement.style.color = 'var(--fresh-accent)';
+            
+            // Refresh the local feed after successful fetch
+            setTimeout(() => {
+                refreshFeed();
+            }, 1000);
+        } else {
+            throw new Error(result.error || 'RSS fetch failed');
+        }
+        
+    } catch (error) {
+        console.error('Error triggering RSS fetch:', error);
+        statusElement.textContent = 'Error: ' + error.message;
+        statusElement.style.color = 'var(--breaking-accent)';
+    } finally {
+        // Re-enable button
+        button.disabled = false;
+        button.innerHTML = `
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            Fetch RSS
+        `;
+        
+        // Clear status after 5 seconds
+        setTimeout(() => {
+            if (statusElement.textContent.includes('✓') || statusElement.textContent.includes('Error:')) {
+                statusElement.textContent = '';
+            }
+        }, 5000);
+    }
+}
+function setupAdminPanel() {
+    // Check for admin mode via URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+        const adminHtml = `
+            <div id="adminPanel" style="
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: var(--surface);
+                border: 2px solid var(--accent-subtle);
+                border-radius: 8px;
+                padding: 16px;
+                box-shadow: 0 4px 12px var(--shadow-medium);
+                z-index: 1000;
+                max-width: 450px;
+            ">
+                <h3 style="font-size: 12px; margin-bottom: 12px; color: var(--text-primary);">Admin Controls</h3>
+                
+                <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light);">
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+                        <button id="rssFetchBtn" onclick="triggerRSSFetch()" style="
+                            padding: 6px 12px;
+                            background: var(--accent-subtle);
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            font-size: 10px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                        ">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                            </svg>
+                            Fetch RSS
+                        </button>
+                        <span style="font-size: 10px; color: var(--text-tertiary);">Trigger full RSS update</span>
+                    </div>
+                    <div id="rssFetchStatus" style="
+                        font-size: 9px;
+                        color: var(--text-secondary);
+                        min-height: 14px;
+                    "></div>
+                </div>
+                
+                <div>
+                    <h4 style="font-size: 11px; margin-bottom: 8px; color: var(--text-primary);">Upload Today's Contracts</h4>
+                    <textarea id="contractsInput" placeholder="Paste contracts text here..." style="
+                        width: 100%;
+                        height: 120px;
+                        font-size: 10px;
+                        padding: 8px;
+                        border: 1px solid var(--border-medium);
+                        border-radius: 4px;
+                        margin-bottom: 8px;
+                        resize: vertical;
+                    "></textarea>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <button onclick="processContracts()" style="
+                            padding: 6px 12px;
+                            background: var(--category-government);
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            font-size: 10px;
+                            cursor: pointer;
+                        ">Process & Upload</button>
+                        <button onclick="document.getElementById('adminPanel').remove()" style="
+                            padding: 6px 12px;
+                            background: var(--border-medium);
+                            color: var(--text-primary);
+                            border: none;
+                            border-radius: 4px;
+                            font-size: 10px;
+                            cursor: pointer;
+                        ">Close</button>
+                    </div>
+                    <div id="uploadStatus" style="
+                        font-size: 10px;
+                        color: var(--text-secondary);
+                        min-height: 14px;
+                    "></div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', adminHtml);
+    }
+}
+function processContracts() {
+    const text = document.getElementById('contractsInput').value;
+    const status = document.getElementById('uploadStatus');
+    
+    if (!text) {
+        status.textContent = 'Please paste contract text';
+        return;
+    }
+    
+    const date = new Date().toISOString().split('T')[0];
+    status.textContent = 'Processing...';
+    
+    // Send to your Lambda endpoint
+    fetch('https://jcsmad2nf7gbhxyarmpykpmdwm0bafge.lambda-url.us-east-1.on.aws/contracts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            date: date,
+            contractText: text 
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Lambda response:', data); // Debug log
+        
+        if (data.success) {
+            // Check if insights exists before accessing properties
+            if (data.insights) {
+                status.textContent = `✓ Uploaded ${data.insights.totalContracts || 0} contracts totaling ${formatCurrency(data.insights.totalValue || 0)}`;
+            } else {
+                status.textContent = '✓ Contracts uploaded successfully';
+            }
+            document.getElementById('contractsInput').value = '';
+            
+            // Refresh the feed after a moment
+            setTimeout(() => {
+                refreshFeed();
+            }, 2000);
+        } else {
+            status.textContent = data.error || 'Upload failed. Please try again.';
+        }
+    })
+    .catch(error => {
+        console.error('Error processing contracts:', error);
+        status.textContent = 'Error: ' + error.message;
+    });
+}
+
+// Update the initialization to include admin panel setup
+// Add this to your existing initialization code
+setupAdminPanel();
+       
+       // Open article and save position
+       function openArticle(link) {
+           saveScrollPosition();
+           window.open(link, '_blank');
+       }
+       
+       // Toggle focus mode
+       function toggleFocusMode(articleElement) {
+           if (focusMode) {
+               document.body.classList.remove('focus-mode');
+               document.querySelectorAll('.article').forEach(a => a.classList.remove('focused'));
+               focusMode = false;
+           } else {
+               document.body.classList.add('focus-mode');
+               articleElement.classList.add('focused');
+               focusMode = true;
+           }
+       }
+       
+       // Cycle loading messages
+       function cycleLoadingMessage() {
+           if (isLoading) {
+               loadingMessage.textContent = loadingMessages[loadingMessageIndex];
+               loadingMessageIndex = (loadingMessageIndex + 1) % loadingMessages.length;
+               setTimeout(cycleLoadingMessage, 800);
+           }
+       }
+       
+       // Refresh feed
+       async function refreshFeed() {
+           if (isLoading) return;
+           
+           isLoading = true;
+           refreshBtn.classList.add('loading');
+           refreshBtn.disabled = true;
+           errorMessage.style.display = 'none';
+           
+           // Start cycling loading messages
+           loadingMessageIndex = 0;
+           cycleLoadingMessage();
+           
+           try {
+               // Fetch both news and stock data
+               const [fetchedArticles, fetchedStockData] = await Promise.all([
+                   fetchArticles(),
+                   fetchStockData()
+               ]);
+               
+               articles = fetchedArticles;
+               stockData = fetchedStockData;
+               
+               createFilters();
+               renderArticles();
+               showToast('Feed refreshed');
+           } catch (error) {
+               errorMessage.style.display = 'block';
+               errorMessage.textContent = 'Unable to load content. Please check your connection.';
+               content.innerHTML = `
+                   <div class="article-grid">
+                       <div class="empty-state">
+                           <div class="icon">📡</div>
+                           <h3>Connection Issue</h3>
+                           <p>Having trouble reaching sources. Please try again.</p>
+                       </div>
+                   </div>
+               `;
+           } finally {
+               isLoading = false;
+               refreshBtn.classList.remove('loading');
+               refreshBtn.disabled = false;
+           }
+       }
+       
+       // Keyboard shortcuts
+       document.addEventListener('keydown', function(e) {
+           // Ignore if typing in an input
+           if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+           
+           // Number keys 1-9: Open articles
+           if (e.key >= '1' && e.key <= '9') {
+               const index = parseInt(e.key) - 1;
+               const articles = document.querySelectorAll('.article');
+               if (articles[index]) {
+                   articles[index].click();
+               }
+           }
+           
+           // F: Focus on filters
+           if (e.key === 'f' || e.key === 'F') {
+               e.preventDefault();
+               const nextFilter = document.querySelector('.filter-tab:not(.active)');
+               if (nextFilter) nextFilter.click();
+           }
+           
+           // R: Refresh
+           if (e.key === 'r' || e.key === 'R') {
+               e.preventDefault();
+               refreshFeed();
+           }
+           
+           // D: Cycle density
+           if (e.key === 'd' || e.key === 'D') {
+               e.preventDefault();
+               const densities = ['compact', 'comfortable', 'spacious'];
+               const currentIndex = densities.indexOf(currentDensity);
+               const nextDensity = densities[(currentIndex + 1) % densities.length];
+               setDensity(nextDensity);
+           }
+           
+           // ?: Show help
+           if (e.key === '?') {
+               e.preventDefault();
+               keyboardHelp.classList.toggle('visible');
+           }
+           
+           // ESC: Close help or exit focus mode
+           if (e.key === 'Escape') {
+               if (keyboardHelp.classList.contains('visible')) {
+                   keyboardHelp.classList.remove('visible');
+               } else if (focusMode) {
+                   document.body.classList.remove('focus-mode');
+                   document.querySelectorAll('.article').forEach(a => a.classList.remove('focused'));
+                   focusMode = false;
+               }
+           }
+       });
+       
+       // Density controls
+       function setDensity(density) {
+           currentDensity = density;
+           document.body.className = `density-${density}`;
+           if (document.body.classList.contains('evening-mode')) {
+               document.body.classList.add('evening-mode');
+           }
+           
+           document.querySelectorAll('.density-btn').forEach(btn => {
+               btn.classList.toggle('active', btn.dataset.density === density);
+           });
+           
+           updateUrlParams('view', density);
+           showToast(`View: ${density}`);
+       }
+       
+       document.querySelectorAll('.density-btn').forEach(btn => {
+           btn.addEventListener('click', function() {
+               setDensity(this.dataset.density);
+           });
+       });
+       
+       // Pull to refresh (mobile)
+       let startY = 0;
+       let pullDistance = 0;
+       let isPulling = false;
+       
+       document.addEventListener('touchstart', function(e) {
+           if (window.scrollY === 0) {
+               startY = e.touches[0].pageY;
+               isPulling = true;
+           }
+       });
+       
+       document.addEventListener('touchmove', function(e) {
+           if (!isPulling) return;
+           
+           pullDistance = e.touches[0].pageY - startY;
+           
+           if (pullDistance > 0 && pullDistance < 150) {
+               pullToRefresh.classList.add('visible');
+               pullToRefresh.style.transform = `translateX(-50%) translateY(${Math.min(pullDistance / 2, 50)}px)`;
+           }
+       });
+       
+       document.addEventListener('touchend', function(e) {
+    if (!isPulling) return;
+    
+    if (pullDistance > 100) {
+        pullToRefresh.classList.add('refreshing');
+        refreshFeed().then(() => {
+            pullToRefresh.classList.remove('refreshing');
+            pullToRefresh.classList.remove('visible');
+            pullToRefresh.style.transform = 'translateX(-50%)';
+        });
+    } else {
+        pullToRefresh.classList.remove('visible');
+        pullToRefresh.style.transform = 'translateX(-50%)';
+    }
+    
+    startY = 0;
+    pullDistance = 0;
+    isPulling = false;
+});
+       
+       // Share functionality
+       function setupShare() {
+           shareLink.addEventListener('click', function(e) {
+               e.preventDefault();
+               if (navigator.share) {
+                   navigator.share({
+                       title: 'The Read Board',
+                       text: 'Check out The Read Board - curated intelligence briefings for the modern professional',
+                       url: window.location.href
+                   }).catch(err => console.log('Error sharing:', err));
+               } else {
+                   // Fallback: copy to clipboard
+                   navigator.clipboard.writeText(window.location.href).then(() => {
+                       showToast('Link copied!');
+                   }).catch(() => {
+                       // Ultimate fallback: open email
+                       const subject = encodeURIComponent('Check out The Read Board');
+                       const body = encodeURIComponent('I thought you might like this curated news site: ' + window.location.href);
+                       window.open(`mailto:?subject=${subject}&body=${body}`);
+                   });
+               }
+           });
+       }
+       
+       // Refresh button
+       refreshBtn.addEventListener('click', refreshFeed);
+       
+       // Visibility API - refresh when tab becomes visible after being hidden for > 30 min
+       let hiddenTime = null;
+       
+       document.addEventListener('visibilitychange', function() {
+           if (document.hidden) {
+               hiddenTime = Date.now();
+           } else if (hiddenTime) {
+               const timeDiff = Date.now() - hiddenTime;
+               if (timeDiff > 30 * 60 * 1000) { // 30 minutes
+                   showToast('Content refreshed');
+                   refreshFeed();
+               }
+               hiddenTime = null;
+           }
+       });
+       
+       // Performance optimization - Intersection Observer for lazy loading
+       if ('IntersectionObserver' in window) {
+           const imageObserver = new IntersectionObserver((entries, observer) => {
+               entries.forEach(entry => {
+                   if (entry.isIntersecting) {
+                       const article = entry.target;
+                       article.style.opacity = '1';
+                       observer.unobserve(article);
+                   }
+               });
+           });
+           
+           // Observe articles as they're created
+           const observeArticles = () => {
+               document.querySelectorAll('.article').forEach(article => {
+                   article.style.opacity = '0';
+                   article.style.transition = 'opacity 0.3s ease';
+                   imageObserver.observe(article);
+               });
+           };
+           
+           // Call after rendering
+           const originalRenderArticles = renderArticles;
+           renderArticles = function() {
+               originalRenderArticles.apply(this, arguments);
+               setTimeout(observeArticles, 100);
+           };
+       }
+       
+       // Initialize
+       initializeFromParams();
+       setGreetingAndDate();
+       refreshFeed();
+       setupShare();
+       
+       // Event listeners
+       window.addEventListener('scroll', updateReadingProgress);
+       window.addEventListener('beforeunload', saveScrollPosition);
+       
+       // Update greeting every hour
+       setInterval(setGreetingAndDate, 3600000);
+       
+       // Auto-refresh every 15 minutes if page is visible
+       setInterval(() => {
+           if (!document.hidden && !isLoading) {
+               refreshFeed();
+           }
+       }, 15 * 60 * 1000);
+   </script>
+</body>
+</html>
