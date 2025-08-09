@@ -1239,6 +1239,29 @@ html {
    text-transform: uppercase;
    letter-spacing: 0.1em;
 }
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 2px 0;
+}
+
+/* Add this new style for the existing h2 */
+h2 {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin: 0;
+}
+
+/* Hide the greeting and contextual message */
+.greeting, .contextual-message {
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -1250,8 +1273,8 @@ html {
        <header>
            <div class="header-content">
                <div class="header-left">
-                   <h2>dibdash.</h2>
-					<h1>Defense Industrial Base intelligence</h1>
+                   <h1>dibdash.</h1>
+					<h2>Defense Industrial Base Intelligence</h2>
                    <div class="current-date" id="currentDate"></div>
                    <div class="greeting" id="greeting"></div>
                    <div class="last-updated" id="lastUpdated">Loading...</div>
