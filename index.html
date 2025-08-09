@@ -1169,6 +1169,22 @@ html {
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
+/* Grayscale emojis for e-ink aesthetic */
+.agency-icon,
+.weekend-emoji,
+.hint-emoji {
+    filter: grayscale(100%);
+    opacity: 0.8;
+}
+
+/* Focus states */
+.refresh-btn:focus,
+.filter-tab:focus,
+.article:focus,
+.share-link:focus {
+    outline: 2px solid var(--accent-muted);
+    outline-offset: 2px;
+}
    </style>
 </head>
 <body>
@@ -1181,7 +1197,7 @@ html {
            <div class="header-content">
                <div class="header-left">
                    <h2>dibdash.</h2>
-					<h1>Defense Industrial Base Dashboard</h1>
+					<h1>Defense Industrial Base intelligence</h1>
                    <div class="current-date" id="currentDate"></div>
                    <div class="greeting" id="greeting"></div>
                    <div class="last-updated" id="lastUpdated">Loading...</div>
@@ -1344,14 +1360,14 @@ html {
            }
            
            // Weekend emoji
-           const weekendEmoji = (day === 0 || day === 6) ? '<span class="weekend-emoji">☕</span>' : '';
-           
-           // Evening mode
-           if (hour >= 20 || hour < 6) {
-               document.body.classList.add('evening-mode');
-           } else {
-               document.body.classList.remove('evening-mode');
-           }
+const weekendEmoji = (day === 0 || day === 6) ? '<span class="weekend-emoji">☕</span>' : '';
+
+// Evening mode - disabled
+// if (hour >= 20 || hour < 6) {
+//     document.body.classList.add('evening-mode');
+// } else {
+//     document.body.classList.remove('evening-mode');
+// }
            
            const options = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
            const formattedDate = now.toLocaleDateString('en-US', options);
