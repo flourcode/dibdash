@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Security Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    /* Clean, professional color palette */
+    --bg-primary: #f8faf7;
+    --bg-secondary: #f2f5f1;
+    --bg-tertiary: #e8ede6;
+    --surface: #ffffff;
+    --border-light: #d8ddd6;
+    --border-medium: #c4cbc2;
+    --text-primary: #1a1f1a;
+    --text-secondary: #3a423a;
+    --text-tertiary: #6b736b;
+    --text-quaternary: #8b938b;
+    --accent-subtle: #3d4f3d;
+    --accent-muted: #5a6e5a;
+    --shadow-soft: rgba(45, 55, 45, 0.03);
+    --shadow-medium: rgba(45, 55, 45, 0.06);
+    --category-procurement: #4a6b4a;
+    --category-security: #5a5e6b;
+    --category-government: #6b5a3d;
+    --category-industry: #6b4a5a;
+    --fresh-accent: #4a7c59;
+    --breaking-accent: #7c4a4a;
+}
+
+body.dark-mode {
+    --bg-primary: #1e211e;
+    --bg-secondary: #252925;
+    --bg-tertiary: #2c302c;
+    --surface: #222622;
+    --border-light: #3a403a;
+    --border-medium: #4c524c;
+    --text-primary: #e0e5e0;
+    --text-secondary: #b0b5b0;
+    --text-tertiary: #808580;
+    --text-quaternary: #606560;
+    --accent-subtle: #6a806a;
+    --accent-muted: #8ab08a;
+    --shadow-soft: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.2);
+    --category-procurement: #72a672;
+    --category-security: #8a8fb0;
+    --category-government: #b08a6b;
+    --category-industry: #b08a9a;
+    --fresh-accent: #72a683;
+    --breaking-accent: #b07a7a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Atkinson Hyperlegible Next', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.4;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.005em;
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* Header */
+header {
+    padding: 10px 0 6px 0;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 8px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 2px 0;
+}
+
+h2 {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.current-date {
+    font-size: 8px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.last-updated {
+    font-size: 8px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-top: 1px;
+}
+
+.header-right {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid var(--border-medium);
+    color: var(--text-tertiary);
+    padding: 4px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.action-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-btn.active {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.refresh-btn.loading svg {
+    animation: gentleSpin 2s linear infinite;
+}
+
+/* Category filters */
+.filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tab {
+    background: none;
+    border: 1px solid var(--border-medium);
+    color: var(--text-tertiary);
+    padding: 4px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.filter-tab:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-medium);
+    color: var(--text-secondary);
+}
+
+.filter-tab.active {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.filter-tab.procurement.active {
+    background: var(--category-procurement);
+    border-color: var(--category-procurement);
+}
+
+.filter-tab.security.active {
+    background: var(--category-security);
+    border-color: var(--category-security);
+}
+
+.filter-tab.government.active {
+    background: var(--category-government);
+    border-color: var(--category-government);
+}
+
+.filter-tab.industry.active {
+    background: var(--category-industry);
+    border-color: var(--category-industry);
+}
+
+.fresh-count {
+    font-size: 8px;
+    background: var(--fresh-accent);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-left: 4px;
+}
+
+/* Date group headers */
+.date-group {
+    margin-bottom: 16px;
+}
+
+.date-group-header {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 0;
+    margin-bottom: 6px;
+    padding-left: 2px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Article grid */
+.article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px;
+    transition: gap 0.3s ease;
+}
+
+.article {
+    background: var(--surface);
+    padding: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    position: relative;
+    animation: slideInUp 0.3s ease-out;
+}
+
+.article:hover {
+    box-shadow: 0 2px 6px var(--shadow-medium);
+    transform: translateY(-1px);
+}
+
+.article:hover .article-description {
+    -webkit-line-clamp: 4;
+}
+
+.article.fresh {
+    border-left: 3px solid var(--fresh-accent);
+}
+
+.article.focused {
+    opacity: 1 !important;
+}
+
+body.focus-mode .article:not(.focused) {
+    opacity: 0.4;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+    font-size: 9px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+}
+
+.article-source {
+    color: var(--accent-muted);
+    font-weight: 600;
+    font-size: 9px;
+}
+
+.article-source.procurement { 
+    color: var(--category-procurement); 
+}
+
+.article-source.security { 
+    color: var(--category-security); 
+}
+
+.article-source.government { 
+    color: var(--category-government); 
+}
+
+.article-source.industry { 
+    color: var(--category-industry); 
+}
+
+.article-source.procurement::before {
+    content: "●";
+    color: var(--category-procurement);
+    margin-right: 4px;
+}
+
+.article-source.security::before {
+    content: "●";
+    color: var(--category-security);
+    margin-right: 4px;
+}
+
+.article-source.government::before {
+    content: "●";
+    color: var(--category-government);
+    margin-right: 4px;
+}
+
+.article-source.industry::before {
+    content: "●";
+    color: var(--category-industry);
+    margin-right: 4px;
+}
+
+.article-separator {
+    width: 2px;
+    height: 2px;
+    background: var(--text-quaternary);
+    border-radius: 50%;
+}
+
+.article-time {
+    color: var(--text-quaternary);
+}
+
+.article-hints {
+    display: flex;
+    gap: 3px;
+    margin-left: auto;
+    font-size: 10px;
+}
+
+.reading-time {
+    font-size: 7px;
+    color: var(--text-quaternary);
+    margin-left: auto;
+}
+
+.article-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+}
+
+.article-description {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-weight: 300;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.article-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: none;
+}
+
+.article-action-button {
+    background: var(--surface);
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.article-action-button:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-muted);
+}
+
+/* Keyword highlighting */
+.keyword-highlight {
+    background: var(--fresh-accent);
+    color: white;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    border-top: 1px solid var(--border-light);
+    padding: 20px 0;
+    background: var(--bg-secondary);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-about p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.share-link {
+    font-size: 10px;
+    color: var(--accent-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    padding: 6px 12px;
+    border: 1px solid var(--border-medium);
+    border-radius: 16px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--surface);
+}
+
+.share-link:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-muted);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.footer-copyright p {
+    font-size: 9px;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+}
+
+/* Desktop 4-column grid */
+@media (min-width: 1200px) {
+    .article-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+    .article-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+    .article-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 599px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    header {
+        padding: 8px 0 6px 0;
+        margin-bottom: 6px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+    
+    .current-date, .last-updated {
+        font-size: 7px;
+    }
+    
+    h1 {
+        font-size: 20px;
+    }
+    
+    h2 {
+        font-size: 11px;
+    }
+    
+    .filters {
+        gap: 4px;
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+    
+    .filter-tab {
+        padding: 8px 12px;
+        font-size: 9px;
+        margin: 2px;
+    }
+    
+    .article-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .article {
+        padding: 16px;
+        margin-bottom: 4px;
+    }
+    
+    .article-title {
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+    
+    .article-description {
+        font-size: 11px;
+        line-height: 1.3;
+        -webkit-line-clamp: 3;
+    }
+    
+    .article-meta {
+       margin-bottom: 4px;
+   }
+   
+   footer {
+       margin-top: 30px;
+       padding: 16px 0;
+   }
+   
+   .footer-content {
+       gap: 10px;
+   }
+   
+   .footer-about p {
+       font-size: 10px;
+       line-height: 1.3;
+   }
+   
+   .share-link {
+       font-size: 9px;
+       padding: 5px 10px;
+   }
+   
+   .footer-copyright p {
+       font-size: 8px;
+   }
+}
+
+/* States */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-tertiary);
+}
+
+.empty-state .icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    opacity: 0.3;
+}
+
+.empty-state h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 300;
+    line-height: 1.3;
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 15px;
+    color: var(--text-tertiary);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+}
+
+.loading-message {
+    animation: fadeInOut 2s ease infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.error-message {
+    background: #fef9f9;
+    border: 1px solid #f5e6e6;
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    display: none;
+    text-align: center;
+    font-weight: 300;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--border-medium);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toast.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(3px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.article {
+    animation: slideInUp 0.3s ease-out;
+}
+
+.article:nth-child(1) { animation-delay: 0.02s; }
+.article:nth-child(2) { animation-delay: 0.04s; }
+.article:nth-child(3) { animation-delay: 0.06s; }
+.article:nth-child(4) { animation-delay: 0.08s; }
+
+@keyframes gentleSpin {
+    to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+   <div class="container">
+       <header>
+           <div class="header-content">
+               <div class="header-left">
+                   <h1>🔐 Supply Chain Security Intel</h1>
+                   <h2>Software Supply Chain Security & Government Procurement</h2>
+                   <div class="current-date" id="currentDate"></div>
+                   <div class="last-updated" id="lastUpdated">Loading...</div>
+               </div>
+   
+               <div class="header-right">
+                   <button class="action-btn" id="darkModeToggle">
+                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                       </svg>
+                       Dark Mode
+                   </button>
+                   <button class="action-btn refresh-btn" id="refreshBtn">
+                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                           <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                       </svg>
+                       Refresh
+                   </button>
+               </div>
+           </div>
+       </header>
+       
+       <div class="filters" id="filterContainer">
+           <button class="filter-tab active" data-filter="all">All</button>
+       </div>
+       
+       <div class="error-message" id="errorMessage"></div>
+       <div id="content">
+           <div class="article-grid">
+               <div class="loading">
+                   <div class="loading-message" id="loadingMessage">Scanning supply chain security feeds...</div>
+               </div>
+           </div>
+       </div>
+       
+       <footer>
+           <div class="footer-content">
+               <div class="footer-about">
+                   <p>Monitoring software supply chain security news and government procurement trends for JFrog, Snyk, Black Duck, Sonatype, and UltraViolet Cyber.</p>
+               </div>
+               <div class="footer-links">
+                   <a href="#" class="share-link" id="shareLink">Share Dashboard</a>
+               </div>
+               <div class="footer-copyright">
+                   <p>&copy; 2025 Supply Chain Security Intelligence. All rights reserved.</p>
+               </div>
+           </div>
+       </footer>
+   </div>
+   
+   <div class="toast" id="toast"></div>
+   
+   <script>
+       // Configuration
+       const S3_JSON_URL = 'https://askarti-daily-data.s3.us-east-1.amazonaws.com/supply-chain-security-news.json';
+       
+       // Target keywords for highlighting
+       const TARGET_COMPANIES = ['JFrog', 'Snyk', 'Black Duck', 'Sonatype', 'UltraViolet Cyber', 'UltraViolet'];
+       const TARGET_AGENCIES = ['DHS', 'VA', 'SSA', 'USDA', 'HHS', 'DOJ', 'GSA', 'Treasury', 'Commerce', 'FCC', 'SEC'];
+       const TARGET_CONCEPTS = ['SBOM', 'software supply chain', 'open source security', 'DevSecOps', 'compliance', 'procurement', 'contract award'];
+       
+       // State
+       let articles = [];
+       let currentFilter = 'all';
+       let isLoading = false;
+       let focusMode = false;
+       let scrollPosition = 0;
+       
+       // Loading messages
+       const loadingMessages = [
+           "Scanning supply chain security feeds...",
+           "Checking government procurement news...",
+           "Analyzing security compliance updates...",
+           "Monitoring vendor announcements...",
+           "Compiling threat intelligence...",
+           "Almost ready..."
+       ];
+       let loadingMessageIndex = 0;
+       
+       // Empty state messages by category
+       const emptyStateMessages = {
+           procurement: ["No procurement activity today", "Contract awards are quiet", "Procurement channels silent"],
+           security: ["No security alerts", "All quiet on security front", "No vulnerabilities reported"],
+           government: ["Government feeds are quiet", "No policy updates", "Agencies taking a break"],
+           industry: ["Industry news is quiet", "No vendor announcements", "Companies in stealth mode"],
+           all: ["No updates at the moment", "All channels quiet", "Check back later"]
+       };
+       
+       // UI Elements
+       const content = document.getElementById('content');
+       const refreshBtn = document.getElementById('refreshBtn');
+       const errorMessage = document.getElementById('errorMessage');
+       const filterContainer = document.getElementById('filterContainer');
+       const lastUpdated = document.getElementById('lastUpdated');
+       const currentDateElement = document.getElementById('currentDate');
+       const loadingMessage = document.getElementById('loadingMessage');
+       const toast = document.getElementById('toast');
+       
+       // Set current date
+       function setCurrentDate() {
+           const now = new Date();
+           const options = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
+           const formattedDate = now.toLocaleDateString('en-US', options);
+           currentDateElement.textContent = formattedDate;
+       }
+       
+       // Dark Mode Toggle
+       const darkModeToggle = document.getElementById('darkModeToggle');
+       const body = document.body;
+       
+       function enableDarkMode() {
+           body.classList.add('dark-mode');
+           darkModeToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg> Light Mode`;
+           localStorage.setItem('theme', 'dark');
+       }
+       
+       function disableDarkMode() {
+           body.classList.remove('dark-mode');
+           darkModeToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode`;
+           localStorage.setItem('theme', 'light');
+       }
+       
+       // Check for saved theme preference
+       const savedTheme = localStorage.getItem('theme');
+       if (savedTheme === 'dark') {
+           enableDarkMode();
+       } else {
+           disableDarkMode();
+       }
+       
+       darkModeToggle.addEventListener('click', () => {
+           if (body.classList.contains('dark-mode')) {
+               disableDarkMode();
+           } else {
+               enableDarkMode();
+           }
+       });
+       
+       // Show toast notification
+       function showToast(message, duration = 2000) {
+           toast.textContent = message;
+           toast.classList.add('visible');
+           setTimeout(() => {
+               toast.classList.remove('visible');
+           }, duration);
+       }
+       
+       // Utility functions
+       function timeAgo(dateString) {
+           const now = new Date();
+           const date = new Date(dateString);
+           const seconds = Math.floor((now - date) / 1000);
+           if (seconds < 60) return 'now';
+           const minutes = Math.floor(seconds / 60);
+           if (minutes < 60) return `${minutes}m`;
+           const hours = Math.floor(minutes / 60);
+           if (hours < 24) return `${hours}h`;
+           const days = Math.floor(hours / 24);
+           if (days < 7) return `${days}d`;
+           return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+       }
+       
+       // Get freshness class
+       function getFreshnessClass(dateString) {
+           const hours = (new Date() - new Date(dateString)) / 3600000;
+           if (hours < 2) return 'fresh';
+           if (hours < 6) return 'recent';
+           return '';
+       }
+       
+       // Highlight keywords in text
+       function highlightKeywords(text) {
+           if (!text) return text;
+           
+           let highlightedText = text;
+           const allKeywords = [...TARGET_COMPANIES, ...TARGET_AGENCIES, ...TARGET_CONCEPTS];
+           
+           allKeywords.forEach(keyword => {
+               const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
+               highlightedText = highlightedText.replace(regex, '<span class="keyword-highlight">$1</span>');
+           });
+           
+           return highlightedText
+		   }
+      
+      // Group articles by date
+      function groupArticlesByDate(articles) {
+          const now = new Date();
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+          const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+          
+          const groups = {
+              today: { label: 'Today', articles: [] },
+              yesterday: { label: 'Yesterday', articles: [] },
+              thisWeek: { label: 'This Week', articles: [] },
+              older: { label: 'Earlier', articles: [] }
+          };
+          
+          articles.forEach(article => {
+              const articleDate = new Date(article.pubDate);
+              const articleDay = new Date(articleDate.getFullYear(), articleDate.getMonth(), articleDate.getDate());
+              
+              if (articleDay.getTime() === today.getTime()) {
+                  groups.today.articles.push(article);
+              } else if (articleDay.getTime() === yesterday.getTime()) {
+                  groups.yesterday.articles.push(article);
+              } else if (articleDay.getTime() >= thisWeek.getTime()) {
+                  groups.thisWeek.articles.push(article);
+              } else {
+                  groups.older.articles.push(article);
+              }
+          });
+          
+          return groups;
+      }
+      
+      // Get category class for styling
+      function getCategoryClass(category) {
+          return category ? category.toLowerCase() : '';
+      }
+      
+      // Fetch articles
+      async function fetchArticles() {
+          try {
+              const response = await fetch(S3_JSON_URL + '?t=' + Date.now());
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              const data = await response.json();
+              
+              if (data.summary?.timestamp) {
+                  lastUpdated.textContent = `Updated ${timeAgo(data.summary.timestamp)}`;
+              }
+              
+              return data.items || [];
+          } catch (error) {
+              console.error('Error fetching articles:', error);
+              throw error;
+          }
+      }
+      
+      // Create category filters
+      function createFilters() {
+          const categories = [...new Set(articles.map(a => a.category))].filter(Boolean).sort();
+          
+          // Count fresh articles per category
+          const freshCounts = {};
+          articles.forEach(article => {
+              if (getFreshnessClass(article.pubDate) === 'fresh') {
+                  freshCounts[article.category] = (freshCounts[article.category] || 0) + 1;
+                  freshCounts['all'] = (freshCounts['all'] || 0) + 1;
+              }
+          });
+          
+          filterContainer.innerHTML = `
+              <button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">
+                  All ${freshCounts['all'] ? `<span class="fresh-count">${freshCounts['all']}</span>` : ''}
+              </button>
+              ${categories.map(category => `
+                  <button class="filter-tab ${getCategoryClass(category)} ${currentFilter === category ? 'active' : ''}" data-filter="${category}">
+                      ${category.charAt(0).toUpperCase() + category.slice(1)}
+                      ${freshCounts[category] ? `<span class="fresh-count">${freshCounts[category]}</span>` : ''}
+                  </button>
+              `).join('')}
+          `;
+          
+          // Add event listeners
+          document.querySelectorAll('.filter-tab').forEach(tab => {
+              tab.addEventListener('click', function() {
+                  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                  this.classList.add('active');
+                  currentFilter = this.dataset.filter;
+                  saveScrollPosition();
+                  renderArticles();
+                  restoreScrollPosition();
+              });
+          });
+      }
+      
+      // Render articles
+      function renderArticles() {
+          const filtered = currentFilter === 'all' 
+              ? articles 
+              : articles.filter(a => a.category === currentFilter);
+          
+          let html = '';
+          
+          if (filtered.length === 0) {
+              const messages = emptyStateMessages[currentFilter] || emptyStateMessages['all'];
+              const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+              
+              html += `
+                  <div class="article-grid">
+                      <div class="empty-state">
+                          <div class="icon">🔍</div>
+                          <h3>${randomMessage}</h3>
+                          <p>Try another filter or check back later.</p>
+                      </div>
+                  </div>
+              `;
+          } else {
+              const groups = groupArticlesByDate(filtered);
+              
+              Object.entries(groups).forEach(([key, group]) => {
+                  if (group.articles.length > 0) {
+                      html += `
+                          <div class="date-group">
+                              <div class="date-group-header">${group.label}</div>
+                              <div class="article-grid">
+                                  ${group.articles.map((article, index) => {
+                                      const freshnessClass = getFreshnessClass(article.pubDate);
+                                      const readingTime = article.readingTime || 2;
+                                      
+                                      // LinkedIn share URL
+                                      const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(article.link)}`;
+                                      
+                                      return `
+                                          <article class="article ${freshnessClass}" 
+                                                   data-index="${index}"
+                                                   tabindex="0" 
+                                                   role="article" 
+                                                   aria-label="Article: ${article.title}">
+                                              <div class="article-meta">
+                                                  <span class="article-source ${getCategoryClass(article.category)}">${article.source}</span>
+                                                  <div class="article-separator"></div>
+                                                  <span class="article-time">${timeAgo(article.pubDate)}</span>
+                                                  <span class="reading-time">${readingTime} min</span>
+                                              </div>
+                                              <h2 class="article-title">${highlightKeywords(article.title)}</h2>
+                                              <p class="article-description">${highlightKeywords(article.description || 'Read more for details.')}</p>
+                                              <div class="article-actions">
+                                                  <a href="${article.link}" target="_blank" class="article-action-button">Read Article</a>
+                                                  <a href="${linkedInUrl}" target="_blank" class="article-action-button">
+                                                      Share
+                                                  </a>
+                                              </div>
+                                          </article>
+                                      `;
+                                  }).join('')}
+                              </div>
+                          </div>
+                      `;
+                  }
+              });
+          }
+          
+          content.innerHTML = html;
+      }
+      
+      // Save scroll position
+      function saveScrollPosition() {
+          scrollPosition = window.pageYOffset;
+      }
+      
+      function restoreScrollPosition() {
+          if (scrollPosition > 0) {
+              setTimeout(() => {
+                  window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+              }, 100);
+          }
+      }
+      
+      // Cycle loading messages
+      function cycleLoadingMessage() {
+          if (isLoading) {
+              loadingMessage.textContent = loadingMessages[loadingMessageIndex];
+              loadingMessageIndex = (loadingMessageIndex + 1) % loadingMessages.length;
+              setTimeout(cycleLoadingMessage, 800);
+          }
+      }
+      
+      // Refresh feed
+      async function refreshFeed() {
+          if (isLoading) return;
+          
+          isLoading = true;
+          refreshBtn.classList.add('loading');
+          refreshBtn.disabled = true;
+          errorMessage.style.display = 'none';
+          
+          // Start cycling loading messages
+          loadingMessageIndex = 0;
+          cycleLoadingMessage();
+          
+          try {
+              articles = await fetchArticles();
+              createFilters();
+              renderArticles();
+              showToast('Feed refreshed');
+          } catch (error) {
+              errorMessage.style.display = 'block';
+              errorMessage.textContent = 'Unable to load content. Please check your connection and S3 URL configuration.';
+              content.innerHTML = `
+                  <div class="article-grid">
+                      <div class="empty-state">
+                          <div class="icon">📡</div>
+                          <h3>Connection Issue</h3>
+                          <p>Having trouble reaching data sources. Please try again.</p>
+                      </div>
+                  </div>
+              `;
+          } finally {
+              isLoading = false;
+              refreshBtn.classList.remove('loading');
+              refreshBtn.disabled = false;
+          }
+      }
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+          // Ignore if typing in an input
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+          
+          // R: Refresh
+          if (e.key === 'r' || e.key === 'R') {
+              e.preventDefault();
+              refreshFeed();
+          }
+          
+          // F: Focus on filters
+          if (e.key === 'f' || e.key === 'F') {
+              e.preventDefault();
+              const nextFilter = document.querySelector('.filter-tab:not(.active)');
+              if (nextFilter) nextFilter.click();
+          }
+      });
+      
+      // Share functionality
+      function setupShare() {
+          const shareLink = document.getElementById('shareLink');
+          shareLink.addEventListener('click', function(e) {
+              e.preventDefault();
+              if (navigator.share) {
+                  navigator.share({
+                      title: 'Supply Chain Security Intelligence',
+                      text: 'Software supply chain security and government procurement intelligence dashboard',
+                      url: window.location.href
+                  }).catch(err => console.log('Error sharing:', err));
+              } else {
+                  // Fallback: copy to clipboard
+                  navigator.clipboard.writeText(window.location.href).then(() => {
+                      showToast('Link copied!');
+                  }).catch(() => {
+                      // Ultimate fallback: open email
+                      const subject = encodeURIComponent('Supply Chain Security Intelligence Dashboard');
+                      const body = encodeURIComponent('Check out this supply chain security intelligence dashboard: ' + window.location.href);
+                      window.open(`mailto:?subject=${subject}&body=${body}`);
+                  });
+              }
+          });
+      }
+      
+      // Refresh button
+      refreshBtn.addEventListener('click', refreshFeed);
+      
+      // Visibility API - refresh when tab becomes visible after being hidden for > 30 min
+      let hiddenTime = null;
+      
+      document.addEventListener('visibilitychange', function() {
+          if (document.hidden) {
+              hiddenTime = Date.now();
+          } else if (hiddenTime) {
+              const timeDiff = Date.now() - hiddenTime;
+              if (timeDiff > 30 * 60 * 1000) { // 30 minutes
+                  showToast('Content refreshed');
+                  refreshFeed();
+              }
+              hiddenTime = null;
+          }
+      });
+      
+      // Initialize
+      setCurrentDate();
+      refreshFeed();
+      setupShare();
+      
+      // Auto-refresh every 15 minutes if page is visible
+      setInterval(() => {
+          if (!document.hidden && !isLoading) {
+              refreshFeed();
+          }
+      }, 15 * 60 * 1000);
+  </script>
+</body>
+</html>
